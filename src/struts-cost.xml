@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+   
+<struts>
+	<package name="cost" namespace="/cost" extends="json-default">
+		<interceptors>
+			<interceptor name="checkAdmin" class="interceptor.LoginInterceptor"></interceptor>
+			<interceptor name="opensessioninview" class="interceptor.OpenSessionInViewInterceptor"></interceptor>
+			
+			<interceptor-stack name="checkAdminStack">
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+				<interceptor-ref name="checkAdmin"></interceptor-ref>
+			</interceptor-stack>
+			
+			<interceptor-stack name="opensessionStack">
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+				<interceptor-ref name="opensessioninview"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		
+		<!-- 定义全局拦截器引用，将默认拦截器改为opensessionStack -->
+		<default-interceptor-ref name="opensessionStack">
+		</default-interceptor-ref>
+
+
+		<global-results>
+			<result name="global" type="redirectAction">
+				<param name="actionName">list2</param>
+				<param name="page">${page}</param>
+			</result>
+		</global-results>
+
+
+		<action name="list" class="action.ListCostAction">
+			<result name="success">/WEB-INF/jsp/cost_list.jsp</result>
+			<result name="fail" type="redirectAction">
+				<param name="namespace">/main</param>
+				<param name="actionName">loginform</param>
+			</result>
+			<interceptor-ref name="checkAdmin"></interceptor-ref>
+		</action>
+		
+		<action name="list2" class="action.ListCostAction">
+			<!-- <interceptor-ref name="checkAdminStack"></interceptor-ref> -->
+			<result name="success">/WEB-INF/jsp/cost_list_struts2.jsp</result>
+			<result name="fail" type="redirectAction">
+				<param name="namespace">/main</param>
+				<param name="actionName">loginform</param>
+			</result>
+		</action>
+		
+		<action name="detail" class="action.DetailAction">
+			<result>/WEB-INF/jsp/detail.jsp</result>
+		</action>
+		
+		<action name="addform">
+			<result>/WEB-INF/jsp/add_form.jsp</result>
+		</action>
+		
+		<action name="validateCostName" class="action.ValidateCostName">
+			<result name="success" type="json">
+				<param name="root">ok</param>
+			</result>
+		</action>
+		
+		<action name="delete" class="action.DeleteCostAction">
+			<result name="success" type="redirectAction">list2</result>
+		</action>
+		
+		<action name="add" class="action.AddCostAction">
+			<result name="success" type="redirectAction">list2</result>
+		</action>
+		
+		<action name="showform" class="action.ShowCostFormAction">
+			<result name="success">/WEB-INF/jsp/cost_update.jsp</result>
+		</action>
+		
+		<action name="update" class="action.UpdateCostAction"></action>
+		
+		<action name="startcost" class="action.StartCostAction"></action>
+		
+		<action name="endcost" class="action.EndCostAction"></action>
+		
+		<action name="search" class="action.SearchCostAction">
+			<result>/WEB-INF/jsp/search_list.jsp</result>
+		</action>
+	</package>
+</struts>
